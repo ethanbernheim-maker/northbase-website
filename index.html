@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Northbase | Let Your Agent In</title>
+    <meta
+      name="description"
+      content="Northbase is an iOS notes app with an exposed notes API surface. Your notes become accessible to your AI agent instead of living inside a built-in assistant."
+    />
+    <meta name="theme-color" content="#111214" />
+    <meta property="og:title" content="Northbase | Let Your Agent In" />
+    <meta
+      property="og:description"
+      content="YOUR notes, accessible to YOUR AI agent."
+    />
+    <meta property="og:type" content="website" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #111214;
+        --bg-elevated: #17191d;
+        --bg-soft: #1d2026;
+        --line: #2a2f38;
+        --line-strong: #3a414d;
+        --text: #f3f0e8;
+        --muted: #b9b4a8;
+        --muted-strong: #d2cbbc;
+        --accent: #c7f36b;
+        --accent-ink: #12140b;
+        --accent-soft: #253116;
+        --radius: 24px;
+        --radius-sm: 18px;
+        --shadow: 0 24px 48px rgba(0, 0, 0, 0.22);
+        --content: 1180px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+          Georgia, serif;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      code {
+        display: inline-block;
+        padding: 0.12rem 0.4rem;
+        border: 1px solid var(--line);
+        border-radius: 0.5rem;
+        background: #14161a;
+        color: #edf7cf;
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.9em;
+      }
+
+      .skip-link {
+        position: absolute;
+        left: 1rem;
+        top: -3rem;
+        z-index: 100;
+        padding: 0.75rem 1rem;
+        border-radius: 999px;
+        background: #ffffff;
+        color: #000000;
+        text-decoration: none;
+        transition: top 0.18s ease;
+      }
+
+      .skip-link:focus-visible {
+        top: 1rem;
+      }
+
+      .shell {
+        width: min(calc(100% - 2rem), var(--content));
+        margin: 0 auto;
+      }
+
+      .ui,
+      .button,
+      .integration-chip,
+      .metric-label,
+      .metric-value,
+      .panel-kicker,
+      .tool-pill,
+      .site-footer {
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(17, 18, 20, 0.92);
+        backdrop-filter: blur(16px);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 4.75rem;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.85rem;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 2.4rem;
+        height: 2.4rem;
+        border: 1px solid var(--line-strong);
+        border-radius: 0.9rem;
+        background: #16181d;
+        color: var(--accent);
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .brand-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 0.08rem;
+      }
+
+      .brand-name {
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.92rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .brand-subtitle {
+        color: var(--muted);
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1.1rem;
+      }
+
+      .nav-links a {
+        color: var(--muted);
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.84rem;
+        text-decoration: none;
+        transition: color 0.18s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .nav-links a:focus-visible,
+      .button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+      }
+
+      main {
+        padding:
+          2.25rem
+          max(1rem, env(safe-area-inset-right))
+          5rem
+          max(1rem, env(safe-area-inset-left));
+      }
+
+      section {
+        scroll-margin-top: 6rem;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+        gap: 2.4rem;
+        align-items: start;
+        padding: 2.2rem 0 2.5rem;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        text-wrap: balance;
+      }
+
+      h1 {
+        margin-top: 1.35rem;
+        max-width: 10ch;
+        font-size: clamp(3.4rem, 9vw, 6.3rem);
+        line-height: 0.93;
+        letter-spacing: -0.06em;
+      }
+
+      .manifesto {
+        max-width: 60ch;
+        margin-top: 1.75rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .manifesto p {
+        margin: 0 0 1.2rem;
+        color: var(--muted-strong);
+        font-size: clamp(1.08rem, 1.65vw, 1.2rem);
+        line-height: 1.9;
+      }
+
+      .manifesto p:last-child {
+        margin-bottom: 0;
+      }
+
+      .manifesto-quote {
+        margin-top: 1.75rem;
+        padding: 1.2rem 1.25rem;
+        border-left: 3px solid var(--accent);
+        background: #15181d;
+        color: var(--text);
+        font-size: 1.02rem;
+        line-height: 1.8;
+      }
+
+      .definition-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .definition-card {
+        min-width: 0;
+        padding: 1.2rem;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        background: var(--bg-elevated);
+      }
+
+      .definition-card h2 {
+        font-size: 1.12rem;
+        line-height: 1.2;
+      }
+
+      .definition-card p {
+        margin: 0.75rem 0 0;
+        color: var(--muted);
+        font-size: 0.99rem;
+        line-height: 1.75;
+      }
+
+      .hero-panel {
+        position: sticky;
+        top: 6.2rem;
+      }
+
+      .panel {
+        display: grid;
+        gap: 1rem;
+        padding: 1.2rem;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--bg-elevated);
+        box-shadow: var(--shadow);
+      }
+
+      .panel-block {
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        background: #14171b;
+      }
+
+      .panel-kicker {
+        color: var(--muted);
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .integration-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+        margin-top: 0.9rem;
+      }
+
+      .integration-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.7rem 0.9rem;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        background: #1b1f25;
+        color: var(--text);
+        font-size: 0.84rem;
+      }
+
+      .phone-frame {
+        width: min(100%, 280px);
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      .phone-screen {
+        padding-top: 0;
+      }
+
+      .phone-screen img {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        display: block;
+        border-radius: 1.5rem;
+        object-fit: contain;
+        border: 1px solid var(--line-strong);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      }
+
+      .screen-label {
+        color: var(--muted);
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .screen-note {
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 1.2rem;
+        background: #171b20;
+      }
+
+      .screen-note strong {
+        display: block;
+        margin-bottom: 0.55rem;
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.84rem;
+      }
+
+      .lines {
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .line {
+        height: 0.58rem;
+        border-radius: 999px;
+        background: #252a33;
+      }
+
+      .line.medium {
+        width: 82%;
+      }
+
+      .line.short {
+        width: 60%;
+      }
+
+      .agent-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        width: fit-content;
+        padding: 0.55rem 0.75rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: #eff8d7;
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.74rem;
+      }
+
+      .agent-chip::before {
+        content: "";
+        width: 0.46rem;
+        height: 0.46rem;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+
+      .handoff {
+        display: grid;
+        gap: 0.9rem;
+      }
+
+      .handoff-preview {
+        min-height: 4.6rem;
+        padding: 0.95rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 1rem;
+        background: #171b20;
+        color: var(--muted-strong);
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.8rem;
+        line-height: 1.7;
+      }
+
+      .handoff-steps {
+        display: grid;
+        gap: 0.6rem;
+      }
+
+      .handoff-step {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.8rem 0.9rem;
+        border: 1px solid var(--line);
+        border-radius: 1rem;
+        background: #16191e;
+        color: var(--muted);
+        transition:
+          border-color 0.2s ease,
+          background-color 0.2s ease,
+          color 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .handoff-step.is-active {
+        border-color: #57633f;
+        background: #1b2117;
+        color: var(--text);
+        transform: translateX(2px);
+      }
+
+      .handoff-index {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.8rem;
+        height: 1.8rem;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        color: var(--accent);
+        font-size: 0.72rem;
+      }
+
+      .handoff-step.is-active .handoff-index {
+        border-color: #778a54;
+      }
+
+      .handoff-copy {
+        min-width: 0;
+      }
+
+      .handoff-title {
+        display: block;
+        color: inherit;
+        font-size: 0.82rem;
+      }
+
+      .handoff-detail {
+        display: block;
+        margin-top: 0.18rem;
+        color: var(--muted);
+        font-size: 0.7rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      .handoff-status {
+        color: var(--muted);
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .handoff-step.is-active .handoff-status {
+        color: var(--accent);
+      }
+
+      .button-stack {
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 3.25rem;
+        padding: 0.95rem 1.1rem;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition:
+          background-color 0.18s ease,
+          border-color 0.18s ease,
+          color 0.18s ease,
+          transform 0.18s ease;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(199, 243, 107, 0.18);
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .button code {
+        border-color: transparent;
+        background: transparent;
+        color: inherit;
+      }
+
+      .button-primary {
+        background: var(--accent);
+        color: var(--accent-ink);
+      }
+
+      .button-primary:hover {
+        background: #d4f78c;
+      }
+
+      .button-secondary {
+        border-color: var(--line-strong);
+        background: #191d23;
+        color: var(--text);
+      }
+
+      .button-secondary:hover {
+        border-color: #4a5360;
+        background: #1f242c;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+
+      .metric {
+        min-width: 0;
+        padding: 0.9rem;
+        border: 1px solid var(--line);
+        border-radius: 1rem;
+        background: #16191e;
+      }
+
+      .metric-label {
+        color: var(--muted);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .metric-value {
+        display: block;
+        margin-top: 0.55rem;
+        color: var(--text);
+        font-size: 0.96rem;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+      }
+
+      .tool-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin-top: 0.9rem;
+      }
+
+      .tool-pill {
+        padding: 0.55rem 0.7rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #181b20;
+        color: var(--muted-strong);
+        font-size: 0.72rem;
+        overflow-wrap: anywhere;
+      }
+
+      pre {
+        margin: 0.9rem 0 0;
+        padding: 0.95rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 1rem;
+        background: #13161a;
+        color: var(--muted-strong);
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.82rem;
+        line-height: 1.7;
+        overflow-x: auto;
+      }
+
+      pre code {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font-size: inherit;
+      }
+
+      .install-note {
+        margin-top: 0.85rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.7;
+      }
+
+      .install-inline {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .install-inline h2 {
+        font-size: 1.15rem;
+        line-height: 1.2;
+      }
+
+      .install-inline-list {
+        display: grid;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .install-inline-item {
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 1rem;
+        background: #15181d;
+      }
+
+      .install-inline-item strong {
+        display: block;
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.86rem;
+        letter-spacing: 0.03em;
+      }
+
+      .install-inline-item p {
+        margin: 0.55rem 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+
+      .section {
+        padding-top: 4rem;
+      }
+
+      .section-head {
+        max-width: 48rem;
+        margin-bottom: 1.6rem;
+      }
+
+      .section-kicker {
+        color: var(--muted);
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.74rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .section-head h2 {
+        margin-top: 0.7rem;
+        font-size: clamp(2.1rem, 5vw, 3.2rem);
+        line-height: 0.98;
+        letter-spacing: -0.05em;
+      }
+
+      .section-head p {
+        margin: 0.9rem 0 0;
+        color: var(--muted);
+        font-size: 1.04rem;
+        line-height: 1.8;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        min-width: 0;
+        padding: 1.25rem;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        background: var(--bg-elevated);
+      }
+
+      .card h3 {
+        font-size: 1.2rem;
+        line-height: 1.25;
+      }
+
+      .card p,
+      .card li {
+        color: var(--muted);
+        font-size: 0.98rem;
+        line-height: 1.75;
+      }
+
+      .card ul {
+        margin: 0.8rem 0 0;
+        padding-left: 1rem;
+      }
+
+      .numbered {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        margin-bottom: 1rem;
+        border-radius: 999px;
+        border: 1px solid var(--line-strong);
+        color: var(--accent);
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+          "Source Code Pro", monospace;
+        font-size: 0.8rem;
+      }
+
+      .thesis-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        gap: 1rem;
+      }
+
+      .essay-block {
+        padding: 1.3rem;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        background: var(--bg-elevated);
+      }
+
+      .essay-block p {
+        margin: 0 0 1rem;
+        color: var(--muted-strong);
+        line-height: 1.9;
+      }
+
+      .essay-block p:last-child {
+        margin-bottom: 0;
+      }
+
+      .site-footer {
+        padding:
+          0
+          max(1rem, env(safe-area-inset-right))
+          max(2rem, env(safe-area-inset-bottom))
+          max(1rem, env(safe-area-inset-left));
+      }
+
+      .footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 2rem 0 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      [data-reveal] {
+        opacity: 0;
+        transform: translateY(16px);
+        transition:
+          opacity 0.45s ease,
+          transform 0.45s ease;
+      }
+
+      [data-reveal].is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1040px) {
+        .hero,
+        .thesis-layout,
+        .grid-3,
+        .grid-2,
+        .definition-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-panel {
+          position: static;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .nav {
+          flex-direction: column;
+          align-items: flex-start;
+          min-height: auto;
+          padding: 1rem 0;
+        }
+
+        .nav-links {
+          flex-wrap: wrap;
+          gap: 0.75rem 1rem;
+        }
+
+        main {
+          padding-top: 1.3rem;
+        }
+
+        .subhead {
+          max-width: none;
+        }
+
+        .phone-frame {
+          min-height: 390px;
+        }
+
+        .metrics {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+
+        [data-reveal] {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to Main Content</a>
+    <header class="site-header">
+      <div class="shell nav">
+        <a class="brand" href="#top" aria-label="Northbase home">
+          <span class="brand-mark" aria-hidden="true">N</span>
+          <span class="brand-copy">
+            <span class="brand-name">Northbase</span>
+            <span class="brand-subtitle">Exposed Notes API</span>
+          </span>
+        </a>
+        <nav class="nav-links ui" aria-label="Primary">
+          <a href="#what-it-is">What It Is</a>
+          <a href="#difference">Why It Matters</a>
+          <a href="#developers">Developers</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="shell">
+        <section class="hero" id="top">
+          <div data-reveal>
+            <h1>Let Your Agent In.</h1>
+            <div class="manifesto">
+              <p>
+                A lot of apps now ship with their own assistant built in, but I don't think that's the right approach.
+                 You already presumably have an agent that you use a lot. You
+                should be able to keep chatting with that agent and have context across products, not switch into a separate AI silo for
+                every task.
+              </p>
+              <p>
+                This has a lot of applications, but one simple place this shows up is in notes apps, where many products embed their own AI agent. 
+                I’d much rather have the same Claude I talk to every day be able to read and edit notes on my phone directly — instead of using a separate, app-specific agent that has no context beyond the notes app.
+              </p>
+              <p>
+                So yeah. I built an IOS app with an exposed endpoint with integrations provided into Claude Cowork (.mcpb file) and OpenClaw (skill + npm package). Been using it a fair amount myself, and I actually like it quite a bit. 
+              </p>
+              <p>
+                If that sounds interesting to you, sign up for the testflight to give it a shot. If not, would be interested to hear general thoughts. 
+              </p>
+              <p>
+                Rest of this website is AI generated presenting this like a real product lol - do think there's some good points made though.
+              </p>
+            </div>
+            <div class="install-inline" id="install">
+              <h2>How to Install</h2>
+              <div class="install-inline-list">
+                <div class="install-inline-item">
+                  <strong>1. Claude Cowork</strong>
+                  <p>Download the <code>.mcpb</code> file and open it in Claude.</p>
+                </div>
+                <div class="install-inline-item">
+                  <strong>2. OpenClaw</strong>
+                  <p>Install the skill named <code>northbase</code>.</p>
+                  <pre><code>npm i -g clawhub
+clawhub install northbase</code></pre>
+                </div>
+                <div class="install-inline-item">
+                  <strong>3. Manual</strong>
+                  <pre><code>npm install northbase
+northbase login</code></pre>
+                </div>
+              </div>
+            </div>
+            <div class="manifesto-quote">
+              Most “AI notes apps” want to own the assistant relationship.
+              Northbase does the opposite. It gives your existing agent a shared
+              workspace with you.
+            </div>
+            <div class="definition-grid">
+              <article class="definition-card">
+                <h2>What It Actually Is</h2>
+                <p>
+                  An iOS mobile app with sync, folders, and search, plus an
+                  exposed surface your agents can use directly.
+                </p>
+              </article>
+              <article class="definition-card">
+                <h2>Why It Feels Different</h2>
+                <p>
+                  It is not a notes app with a trapped in-app assistant. It is a
+                  notes workspace shared by you and your external agent.
+                </p>
+              </article>
+            </div>
+          </div>
+
+          <aside class="hero-panel" data-reveal>
+            <div class="panel">
+              <div class="panel-block">
+                <div class="panel-kicker">Integrated With</div>
+                <div class="integration-list">
+                  <span class="integration-chip">OpenClaw</span>
+                  <span class="integration-chip">Claude Cowork</span>
+                </div>
+              </div>
+
+              <div class="button-stack">
+                <a
+                  class="button button-primary"
+                  href="https://tally.so/r/oboRq1"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Join TestFlight
+                </a>
+                <a
+                  class="button button-secondary"
+                  href="northbase-mcp-0.1.1%20copy.mcpb"
+                >
+                  Download the <code>.mcpb</code> Extension
+                </a>
+              </div>
+
+              <div class="panel-block">
+                <div class="panel-kicker">
+                  iOS App Preview - literally just files UI is not the
+                  point.
+                </div>
+                <div class="phone-frame" aria-hidden="true">
+                  <div class="phone-screen">
+                    <img
+                      src="screenshot.png"
+                      alt="Northbase iOS app screenshot"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-block">
+                <div class="panel-kicker">Shared Note Trace</div>
+                <div class="handoff" aria-hidden="true">
+                  <div class="handoff-preview" data-handoff-preview>
+                    note created on iPhone: "Draft launch copy for Northbase"
+                  </div>
+                  <div class="handoff-steps">
+                    <div
+                      class="handoff-step is-active"
+                      data-handoff-step
+                      data-preview='note created on iPhone: "Draft launch copy for Northbase"'
+                    >
+                      <span class="handoff-index">01</span>
+                      <span class="handoff-copy">
+                        <span class="handoff-title">Write on phone</span>
+                        <span class="handoff-detail">Northbase iOS app</span>
+                      </span>
+                      <span class="handoff-status">Live</span>
+                    </div>
+                    <div
+                      class="handoff-step"
+                      data-handoff-step
+                      data-preview='agent reads note via MCP and adds: "tighten hero, simplify CTA"'
+                    >
+                      <span class="handoff-index">02</span>
+                      <span class="handoff-copy">
+                        <span class="handoff-title">Agent works in it</span>
+                        <span class="handoff-detail">OpenClaw / Claude Cowork</span>
+                      </span>
+                      <span class="handoff-status">Sync</span>
+                    </div>
+                    <div
+                      class="handoff-step"
+                      data-handoff-step
+                      data-preview='updated note appears back on iPhone with new structure and tasks'
+                    >
+                      <span class="handoff-index">03</span>
+                      <span class="handoff-copy">
+                        <span class="handoff-title">See it back on phone</span>
+                        <span class="handoff-detail">Same note, updated</span>
+                      </span>
+                      <span class="handoff-status">Done</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="metrics">
+                <div class="metric">
+                  <span class="metric-label">Product</span>
+                  <span class="metric-value">iOS notes app with sync, folders, &amp; search</span>
+                </div>
+                <div class="metric">
+                  <span class="metric-label">Package</span>
+                  <span class="metric-value"><code>northbase</code> for JavaScript developers</span>
+                </div>
+                <div class="metric">
+                  <span class="metric-label">Extension</span>
+                  <span class="metric-value">One-click Claude Desktop install</span>
+                </div>
+                <div class="metric">
+                  <span class="metric-label">Idea</span>
+                  <span class="metric-value">Your agent works in the same notes you do</span>
+                </div>
+              </div>
+
+            </div>
+          </aside>
+        </section>
+
+        <section class="section" id="what-it-is">
+          <div class="section-head" data-reveal>
+            <div class="section-kicker">What Northbase Is</div>
+            <h2>Three Surfaces, One Shared Workspace.</h2>
+            <p>
+              Northbase is not just one app screen. It is a phone interface for
+              you, a developer surface for code, and an agent surface for tools.
+              All three point at the same notes.
+            </p>
+          </div>
+          <div class="grid-3">
+            <article class="card" data-reveal>
+              <span class="numbered">01</span>
+              <h3>iOS App</h3>
+              <p>
+                Write and read notes on your phone with sync, folders, and
+                search. The phone remains the human interface.
+              </p>
+            </article>
+            <article class="card" data-reveal>
+              <span class="numbered">02</span>
+              <h3>Exposed Notes API</h3>
+              <p>
+                Your notes are available through an exposed surface instead of
+                being trapped inside a closed product experience.
+              </p>
+            </article>
+            <article class="card" data-reveal>
+              <span class="numbered">03</span>
+              <h3>Agent Access</h3>
+              <p>
+                Install the extension or use the MCP tools directly so your
+                agent can read, write, list, and organize the same notes.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="difference">
+          <div class="section-head" data-reveal>
+            <div class="section-kicker">Why It Matters</div>
+            <h2>Agent Allowed In. Agent Not Built In.</h2>
+            <p>
+              The product thesis is not “put AI inside notes.” It is “let your
+              broader personal agent work with your notes.” That difference
+              sounds small, but it changes the whole shape of the product.
+            </p>
+          </div>
+          <div class="thesis-layout">
+            <div class="essay-block" data-reveal>
+              <p>
+                When every product ships with its own assistant, context gets
+                fragmented. One assistant knows your notes. Another knows your
+                calendar. Another knows your code. You end up with many smart
+                islands and no real working partner.
+              </p>
+              <p>
+                Northbase is built for the opposite direction. You already have
+                an agent relationship forming around tools like OpenClaw and
+                Claude Cowork. That agent should understand your notes too,
+                because your notes are part of your real context.
+              </p>
+              <p>
+                So Northbase does not try to replace your agent with a new one.
+                It gives your existing agent permission to enter the workspace,
+                act on the same artifacts, and write back to the same place you
+                use on your phone.
+              </p>
+            </div>
+            <div class="grid-2">
+              <article class="card" data-reveal>
+                <h3>What You Do</h3>
+                <p>
+                  Write down ideas, tasks, drafts, and context on your phone the
+                  moment they occur.
+                </p>
+              </article>
+              <article class="card" data-reveal>
+                <h3>What Your Agent Does</h3>
+                <p>
+                  Reads the same note, updates plans, organizes folders, or
+                  writes a response back into your workspace.
+                </p>
+              </article>
+              <article class="card" data-reveal>
+                <h3>What You Avoid</h3>
+                <p>
+                  Another app-specific assistant with isolated memory and a job
+                  scope that ends inside one product.
+                </p>
+              </article>
+              <article class="card" data-reveal>
+                <h3>What You Get</h3>
+                <p>
+                  One notes space that works across phone, code, and your
+                  preferred external agent.
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="developers">
+          <div class="section-head" data-reveal>
+            <div class="section-kicker">For Developers</div>
+            <h2>Use the App. Wire It Into Your Stack.</h2>
+            <p>
+              The iOS app is where the notes live. The npm package and MCP
+              surface are how you bring those notes into your own tooling,
+              automations, and agent workflows.
+            </p>
+          </div>
+          <div class="grid-2">
+            <article class="card" data-reveal>
+              <h3><code>northbase</code> npm Package</h3>
+              <p>
+                JavaScript API client for developers who want to read and write
+                Northbase notes from code.
+              </p>
+              <p><code>npm install northbase</code></p>
+            </article>
+            <article class="card" data-reveal>
+              <h3>Claude Desktop Extension</h3>
+              <p>
+                Fastest path to agent access. Install the <code>.mcpb</code>
+                once and expose Northbase to Claude Desktop.
+              </p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <span>Northbase</span>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var prefersReducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+        if (
+          !("IntersectionObserver" in window) ||
+          prefersReducedMotion
+        ) {
+          document.querySelectorAll("[data-reveal]").forEach(function (node) {
+            node.classList.add("is-visible");
+          });
+          return;
+        }
+
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.14,
+            rootMargin: "0px 0px -18px 0px"
+          }
+        );
+
+        document.querySelectorAll("[data-reveal]").forEach(function (node) {
+          observer.observe(node);
+        });
+
+        var handoffSteps = Array.prototype.slice.call(
+          document.querySelectorAll("[data-handoff-step]")
+        );
+        var handoffPreview = document.querySelector("[data-handoff-preview]");
+
+        if (!handoffSteps.length || !handoffPreview) {
+          return;
+        }
+
+        var activeIndex = 0;
+
+        function renderHandoff(index) {
+          handoffSteps.forEach(function (step, stepIndex) {
+            step.classList.toggle("is-active", stepIndex === index);
+          });
+          handoffPreview.textContent =
+            handoffSteps[index].getAttribute("data-preview") || "";
+        }
+
+        renderHandoff(activeIndex);
+
+        window.setInterval(function () {
+          activeIndex = (activeIndex + 1) % handoffSteps.length;
+          renderHandoff(activeIndex);
+        }, 1800);
+      })();
+    </script>
+  </body>
+</html>
