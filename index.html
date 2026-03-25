@@ -362,6 +362,15 @@
         box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
       }
 
+      .demo-video {
+        width: 100%;
+        display: block;
+        border: 1px solid var(--line-strong);
+        border-radius: 1.1rem;
+        background: #0f1114;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+      }
+
       .screen-label {
         color: var(--muted);
         font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
@@ -817,6 +826,22 @@
         font-size: 0.82rem;
       }
 
+      .footer-links {
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .footer-link {
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.18s ease;
+      }
+
+      .footer-link:hover {
+        color: var(--text);
+      }
+
       [data-reveal] {
         opacity: 0;
         transform: translateY(16px);
@@ -1011,6 +1036,23 @@ northbase login</code></pre>
                 >
                   Download the <code>.mcpb</code> Extension
                 </a>
+              </div>
+
+              <div class="panel-block">
+                <div class="panel-kicker">
+                  Demo: Claude adding file directly into app
+                </div>
+                <video
+                  class="demo-video"
+                  src="demo.mp4"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  preload="metadata"
+                  controls
+                  data-demo-video
+                ></video>
               </div>
 
               <div class="panel-block">
@@ -1234,6 +1276,9 @@ northbase login</code></pre>
     <footer class="site-footer">
       <div class="shell footer-inner">
         <span>Northbase</span>
+        <span class="footer-links">
+          <a class="footer-link" href="/privacy">Privacy</a>
+        </span>
       </div>
     </footer>
 
@@ -1276,27 +1321,31 @@ northbase login</code></pre>
           document.querySelectorAll("[data-handoff-step]")
         );
         var handoffPreview = document.querySelector("[data-handoff-preview]");
+        var demoVideo = document.querySelector("[data-demo-video]");
 
-        if (!handoffSteps.length || !handoffPreview) {
-          return;
+        if (demoVideo) {
+          demoVideo.playbackRate = 2.5;
+          demoVideo.defaultPlaybackRate = 2.5;
         }
 
-        var activeIndex = 0;
+        if (handoffSteps.length && handoffPreview) {
+          var activeIndex = 0;
 
-        function renderHandoff(index) {
-          handoffSteps.forEach(function (step, stepIndex) {
-            step.classList.toggle("is-active", stepIndex === index);
-          });
-          handoffPreview.textContent =
-            handoffSteps[index].getAttribute("data-preview") || "";
-        }
+          function renderHandoff(index) {
+            handoffSteps.forEach(function (step, stepIndex) {
+              step.classList.toggle("is-active", stepIndex === index);
+            });
+            handoffPreview.textContent =
+              handoffSteps[index].getAttribute("data-preview") || "";
+          }
 
-        renderHandoff(activeIndex);
-
-        window.setInterval(function () {
-          activeIndex = (activeIndex + 1) % handoffSteps.length;
           renderHandoff(activeIndex);
-        }, 1800);
+
+          window.setInterval(function () {
+            activeIndex = (activeIndex + 1) % handoffSteps.length;
+            renderHandoff(activeIndex);
+          }, 1800);
+        }
       })();
     </script>
   </body>
