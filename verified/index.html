@@ -135,5 +135,14 @@
         </p>
       </section>
     </main>
+    <script>
+      window.setTimeout(function () {
+        window.location.href = "northbase://login-callback";
+      }, 0);
+
+      window.setTimeout(function () {
+        // Best-effort only. If the app did not open, stay on this page.
+      }, 1000);
+    </script>
   </body>
 </html>
