@@ -374,6 +374,29 @@
         box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
       }
 
+      .qr-block {
+        display: grid;
+        justify-items: center;
+        gap: 0.8rem;
+        text-align: center;
+      }
+
+      .qr-image {
+        width: 160px;
+        max-width: 100%;
+        display: block;
+        border: 1px solid var(--line-strong);
+        border-radius: 1rem;
+        background: #ffffff;
+        padding: 0.7rem;
+      }
+
+      .qr-caption {
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.6;
+      }
+
       .screen-label {
         color: var(--muted);
         font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
@@ -1045,6 +1068,20 @@ northbase login</code></pre>
                 >
                   Download the <code>.mcpb</code> Extension
                 </a>
+              </div>
+
+              <div class="panel-block">
+                <div class="panel-kicker">On desktop?</div>
+                <div class="qr-block">
+                  <img
+                    class="qr-image"
+                    src="testflight-qr.png"
+                    alt="QR code for the Northbase TestFlight link"
+                  />
+                  <div class="qr-caption">
+                    Scan to download on TestFlight.
+                  </div>
+                </div>
               </div>
 
               <div class="panel-block">
